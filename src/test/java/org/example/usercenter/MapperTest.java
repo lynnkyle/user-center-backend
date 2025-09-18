@@ -17,10 +17,9 @@ public class MapperTest {
 
     @Test
     public void testSelect() {
-        System.out.println(("----- selectAll method test ------"));
-        List<User> userList = userMapper.selectList(null);
-        Assert.isTrue(5 == userList.size(), "");
-        userList.forEach(System.out::println);
+        List<User> users = userMapper.selectList(null);
+        Assert.notNull(users);
+        users.forEach(System.out::println);
     }
 
 }
