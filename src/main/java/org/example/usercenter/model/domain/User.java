@@ -1,16 +1,20 @@
-package org.example.usercenter.model;
+package org.example.usercenter.model.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.util.Date;
+
 import lombok.Data;
 
 /**
- * 用户表
+ * 用户实体类
+ *
  * @TableName user
  */
-@TableName(value ="user")
+@TableName(value = "user")
 @Data
 public class User {
     /**
@@ -62,6 +66,7 @@ public class User {
     /**
      * 逻辑删除
      */
+    @TableLogic
     private Integer isDelete;
 
     /**

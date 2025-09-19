@@ -1,25 +1,32 @@
 package org.example.usercenter;
 
-import org.example.usercenter.mapper.UserMapper;
-import org.example.usercenter.model.User;
+import org.example.usercenter.model.domain.User;
+import org.example.usercenter.service.UserService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.util.Assert;
 
-import java.util.List;
+import javax.annotation.Resource;
 
 @SpringBootTest
 public class MapperTest {
 
-    @Autowired
-    private UserMapper userMapper;
+    @Resource
+    private UserService userService;
 
     @Test
     public void testSelect() {
-        List<User> users = userMapper.selectList(null);
-        Assert.notNull(users);
-        users.forEach(System.out::println);
+        User user = new User();
+        user.setUserName("lzy");
+        user.setAccount("");
+        user.setPassword("");
+        user.setAvatarUrl("");
+        user.setGender(0);
+        user.setPhone("");
+        user.setEmail("");
+        boolean save = userService.save(user);
+        System.out.println(save);
+        Assertions.assertEquals(save, true);
     }
 
 }

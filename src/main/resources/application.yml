@@ -8,3 +8,12 @@ spring:
     url: jdbc:mysql://localhost:3306/user-center
     username: root
     password: 123456
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      # 数据库逻辑删除字段
+      logic-delete-field: is_delete
+      logic-delete-value: 1
+      logic-not-delete-value: 0
