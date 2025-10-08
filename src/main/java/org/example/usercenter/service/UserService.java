@@ -1,9 +1,11 @@
 package org.example.usercenter.service;
 
+import org.apache.ibatis.annotations.Param;
 import org.example.usercenter.model.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author LinZeyuan
@@ -18,9 +20,10 @@ public interface UserService extends IService<User> {
      * @param userAccount   用户账户
      * @param userPassword  用户密码
      * @param checkPassword 校验密码
+     * @param userCode 校验编码
      * @return 用户ID
      */
-    long userRegister(String userAccount, String userPassword, String checkPassword);
+    long userRegister(String userAccount, String userPassword, String checkPassword, String userCode);
 
     /**
      * 用户登录
@@ -31,4 +34,18 @@ public interface UserService extends IService<User> {
      */
     User doLogin(String userAccount, String userPassword, HttpServletRequest request);
 
+    /**
+     * 用户脱敏
+     *
+     * @param userFromDb
+     * @return
+     */
+    User getSafetyUser(User userFromDb);
+
+    /**
+     * 用户注销
+     * @param req
+     * @return
+     */
+    int userLogout(HttpServletRequest req);
 }

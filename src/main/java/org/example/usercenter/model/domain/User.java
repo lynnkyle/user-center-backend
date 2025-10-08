@@ -26,7 +26,7 @@ public class User {
     /**
      * 用户昵称
      */
-    private String userName;
+    private String name;
 
     /**
      * 用户账号
@@ -59,10 +59,20 @@ public class User {
     private String email;
 
     /**
+     * 用户角色(0-普通用户, 1-管理员)
+     */
+    private Integer role;
+
+    /**
      * 用户状态(0-正常)
      */
     private Integer status;
 
+    /**
+     * 用户校验编号
+     */
+    private String code;
+    
     /**
      * 逻辑删除
      */

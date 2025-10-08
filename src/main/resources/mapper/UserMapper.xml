@@ -5,24 +5,23 @@
 <mapper namespace="org.example.usercenter.mapper.UserMapper">
 
     <resultMap id="BaseResultMap" type="org.example.usercenter.model.domain.User">
-        <id property="id" column="id"/>
-        <result property="userName" column="user_name"/>
-        <result property="account" column="account"/>
-        <result property="password" column="password"/>
-        <result property="avatarUrl" column="avatar_url"/>
-        <result property="gender" column="gender"/>
-        <result property="phone" column="phone"/>
-        <result property="email" column="email"/>
-        <result property="status" column="status"/>
-        <result property="isDelete" column="is_delete"/>
-        <result property="createTime" column="create_time"/>
-        <result property="updateTime" column="update_time"/>
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="account" column="account" jdbcType="VARCHAR"/>
+            <result property="password" column="password" jdbcType="VARCHAR"/>
+            <result property="avatarUrl" column="avatar_url" jdbcType="VARCHAR"/>
+            <result property="gender" column="gender" jdbcType="TINYINT"/>
+            <result property="phone" column="phone" jdbcType="VARCHAR"/>
+            <result property="email" column="email" jdbcType="VARCHAR"/>
+            <result property="role" column="role" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="code" column="code" jdbcType="VARCHAR"/>
+            <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id
-        ,user_name,account,password,avatar_url,gender,
-        phone,email,status,is_delete,create_time,
-        update_time
+        id,`name`,`account`, `password`,avatar_url,gender,phone,email,`role`,`status`,`code`,is_delete,create_time,update_time
     </sql>
 </mapper>

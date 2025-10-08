@@ -17,7 +17,7 @@ public class MapperTest {
     @Test
     public void testSelect() {
         User user = new User();
-        user.setUserName("lzy");
+        user.setName("lzy");
         user.setAccount("");
         user.setPassword("");
         user.setAvatarUrl("");
