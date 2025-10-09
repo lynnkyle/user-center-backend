@@ -77,6 +77,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = new User();
         user.setAccount(userAccount);
         user.setPassword(encryptPassword);
+        user.setCode(userCode);
         boolean result = save(user);
         if (!result) {
             return -1;
