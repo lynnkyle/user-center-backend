@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.example.usercenter.common.ErrorCode;
 import org.example.usercenter.constant.UserConstant;
+import org.example.usercenter.exception.BusinessException;
 import org.example.usercenter.mapper.UserMapper;
 import org.example.usercenter.model.domain.User;
 import org.example.usercenter.service.UserService;
@@ -25,7 +27,6 @@ import java.util.regex.Pattern;
  * @createDate 2025-09-18 17:35:27
  */
 @Service
-@Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     // 加密盐值
@@ -37,27 +38,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword, String userCode) {
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword, userCode)) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "请求参数为空");
         }
         // 1.校验用户账号
         if (userAccount.length() < 4) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号过短");
         }
         String validPattern = "^[a-zA-Z0-9\\u4e00-\\u9fa5]+$";
         Matcher matcher = Pattern.compile(validPattern).matcher(userAccount);
         if (!matcher.matches()) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号格式不正确");
         }
         // 2.校验用户密码
         if (userPassword.length() < 8) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短");
         }
         if (!userPassword.equals(checkPassword)) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "两次输入的密码不一致");
         }
         // 3.校验校验编码
         if (userCode.length() > 5) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "校验编码过长");
         }
         // 校验用户账号-重复
         QueryWrapper<User> queryWrapper = new QueryWrapper<User>();
@@ -111,7 +112,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         queryWrapper.eq("password", encryptPassword);
         User userFromDb = userMapper.selectOne(queryWrapper);
         if (userFromDb == null) {
-            log.info("user login failed");
             return null;
         }
         // 5. 返回用户信息(脱敏)
@@ -145,9 +145,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public int userLogout(HttpServletRequest req) {
+    public void userLogout(HttpServletRequest req) {
         req.getSession().removeAttribute(UserConstant.USER_LOGIN_STATE);
-        return 1;
     }
 }
 

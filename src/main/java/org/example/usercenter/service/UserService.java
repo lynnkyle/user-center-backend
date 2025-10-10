@@ -20,7 +20,7 @@ public interface UserService extends IService<User> {
      * @param userAccount   用户账户
      * @param userPassword  用户密码
      * @param checkPassword 校验密码
-     * @param userCode 校验编码
+     * @param userCode      校验编码
      * @return 用户ID
      */
     long userRegister(String userAccount, String userPassword, String checkPassword, String userCode);
@@ -44,8 +44,9 @@ public interface UserService extends IService<User> {
 
     /**
      * 用户注销
+     *
      * @param req
      * @return
      */
-    int userLogout(HttpServletRequest req);
+    void userLogout(HttpServletRequest req);
 }
