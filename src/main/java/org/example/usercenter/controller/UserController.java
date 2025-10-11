@@ -45,9 +45,6 @@ public class UserController {
         String userPassword = userRegisterRequest.getUserPassword();
         String checkPassword = userRegisterRequest.getCheckPassword();
         String userCode = userRegisterRequest.getUserCode();
-        if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword, userCode)) {
-            return null;
-        }
         long userId = userService.userRegister(userAccount, userPassword, checkPassword, userCode);
         return ResultUtils.success(userId, "用户注册成功, 并返回用户ID");
     }
@@ -58,22 +55,16 @@ public class UserController {
     @PostMapping("/login")
     private BaseResponse<User> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
         if (userLoginRequest == null) {
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         String userAccount = userLoginRequest.getUserAccount();
         String userPassword = userLoginRequest.getUserPassword();
-        if (StringUtils.isAnyBlank(userAccount, userPassword)) {
-            return null;
-        }
         User user = userService.doLogin(userAccount, userPassword, request);
         return ResultUtils.success(user, "用户登录成功, 并返回用户信息");
     }
 
     @PostMapping("/logout")
     private BaseResponse<Void> userLogout(HttpServletRequest request) {
-        if (request == null) {
-            return null;
-        }
         userService.userLogout(request);
         return ResultUtils.success(null, "用户退出登录成功");
     }
@@ -82,7 +73,7 @@ public class UserController {
     public BaseResponse<User> getCurrentUser(HttpServletRequest req) {
         User currentUser = (User) req.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
         if (currentUser == null) {
-            return null;
+            throw new BusinessException(ErrorCode.NOT_LOGIN);
         }
         long id = currentUser.getId();
         // todo 校验用户是否合法
@@ -108,10 +99,8 @@ public class UserController {
 
     @DeleteMapping("/delete")
     private BaseResponse<Boolean> deleteUsers(@RequestParam("id") long id, HttpServletRequest req) {
-        if (!isAdmin(req)) return null;
-        if (id <= 0) {
-            return null;
-        }
+        if (!isAdmin(req)) throw new BusinessException(ErrorCode.NO_AUTH);
+        if (id <= 0) throw new BusinessException(ErrorCode.PARAMS_ERROR);
         boolean res = userService.removeById(id);
         return ResultUtils.success(res, "用户删除成功");
     }

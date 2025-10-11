@@ -64,13 +64,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         QueryWrapper<User> queryWrapper = new QueryWrapper<User>();
         long count = userMapper.selectCount(queryWrapper.eq("account", userAccount));
         if (count > 0) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号重复");
         }
         // 校验校验编码-重复
         queryWrapper = new QueryWrapper<User>();
         count = userMapper.selectCount(queryWrapper.eq("code", userCode));
         if (count > 0) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "校验编码重复");
         }
         // 4.密码加密
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
@@ -81,7 +81,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setCode(userCode);
         boolean result = save(user);
         if (!result) {
-            return -1;
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "数据库保存失败");
         }
         // 5.返回用户ID
         return user.getId();
@@ -90,20 +90,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public User doLogin(String userAccount, String userPassword, HttpServletRequest request) {
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "请求参数为空");
         }
         // 1. 校验用户账号
         if (userAccount.length() < 4) {
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号过短");
         }
         String validPattern = "^[a-zA-Z0-9\\u4e00-\\u9fa5]+$";
         Matcher matcher = Pattern.compile(validPattern).matcher(userAccount);
         if (!matcher.matches()) {
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号格式不正确");
         }
         // 2. 校验用户密码
         if (userPassword.length() < 8) {
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短");
         }
         // 3. 校验密码是否正确
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
@@ -112,7 +112,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         queryWrapper.eq("password", encryptPassword);
         User userFromDb = userMapper.selectOne(queryWrapper);
         if (userFromDb == null) {
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号或密码错误");
         }
         // 5. 返回用户信息(脱敏)
         User safetydUser = getSafetyUser(userFromDb);
@@ -126,9 +126,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         用户脱敏
      */
     public User getSafetyUser(User userFromDb) {
-        if (userFromDb == null) {
-            return null;
-        }
         User safetydUser = new User();
         safetydUser.setId(userFromDb.getId());
         safetydUser.setName(userFromDb.getName());
