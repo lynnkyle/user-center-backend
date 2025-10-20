@@ -86,7 +86,7 @@ public class UserController {
     private BaseResponse<List<User>> searchUsers(@RequestParam(value = "name", required = false) String userName, HttpServletRequest req) {
         // 用户鉴权
         if (!isAdmin(req)) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+            throw new BusinessException(ErrorCode.NO_AUTH);
         }
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         if (StringUtils.isNotBlank(userName)) {
